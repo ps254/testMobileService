@@ -39,9 +39,9 @@ public class TestServices {
     /**
      * @param args the command line arguments
      */
-    private static final String userpass = "nabl2:12345";
+    private static final String userpass = "n1901:12345";
     private static final String userpassExit = "40000001:123456";
-    private static final String getData = "http://localhost:8080/api/login";
+    private static final String getData = "http://localhost:8080/mobile/api/mobiledata";
     private static final String observal = "http://localhost:8080/afservice/webresources/mobileService/observer";
     private static final String total = "http://localhost:9090/afservice/webresources/mobileService/observerTotal";
     private static final String roadMap = "http://localhost:9090/afservice/webresources/mobileService/roadMap";
@@ -186,12 +186,11 @@ public class TestServices {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Type", "application/json");
             String userpass = userdata;
             String basicAuth = "Basic " + Base64.encode(userpass.getBytes());
-            conn.setRequestProperty("j_username", userdata.split(":")[0]);
-            conn.setRequestProperty("j_password", userdata.split(":")[1]);
+            conn.setRequestProperty("Authorization", basicAuth);
 
             String input;
             if(object!=null) {
