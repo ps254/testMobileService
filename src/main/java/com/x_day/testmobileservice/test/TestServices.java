@@ -41,14 +41,14 @@ public class TestServices {
      * @param args the command line arguments
      */
     private static final String userpass = "n1901:12345";
-    private static final String userpassExit = "40000001:123456";
+    private static final String userpassExit = "ex1901:12345";
     private static final String getData = "http://localhost:8080/mobile/api/mobiledata";
     private static final String observal = "http://localhost:8080/mobile/api/observer";
     private static final String total = "http://localhost:8080/mobile/api/observerTotal";
     private static final String roadMap = "http://localhost:8080/mobile/api/roadMap";
-    private static final String exitPoll = "http://localhost:9090/afservice/webresources/mobileService/exitpoll";
+    private static final String exitPoll = "http://localhost:9090/mobile/api/exitpoll";
     private static final String violation = "http://localhost:8080/mobile/api/violation";
-    private static final String violationMulti = "http://localhost:8080/afservice/webresources/mobileService/violationMultipart";
+    private static final String violationMulti = "http://localhost:9090/mobile/api/violationMultipart";
     private static final String totalMulti = "http://localhost:8080/afservice/webresources/mobileService/observerTotalMultipart";
 
     public static void main(String[] args) throws IOException {
@@ -58,8 +58,8 @@ public class TestServices {
 //        testServices.testMessageTotal();
 //        testServices.testeMessageRoadMap();
 //        testServices.testMessageExitPoll();
-        testServices.testMessageViolation();
-//        testServices.testMessageViolationMulti();
+//        testServices.testMessageViolation();
+        testServices.testMessageViolationMulti();
 //        testServices.testMessageTotalMulti();
     }
 
@@ -82,22 +82,22 @@ public class TestServices {
         connectMulti(totalMulti, "J:/test.txt", messageTotalMS, userpass);
     }
 
-//    private void testMessageViolationMulti() throws UnsupportedEncodingException, IOException {
-//        MessageViolationMS messageViolationMS = new MessageViolationMS();
-//        messageViolationMS.setMessageTime(1377024780L);
-//        messageViolationMS.setDescription("12");
-//        messageViolationMS.setSecurityKey(123L);
-//        messageViolationMS.setMeasures("вот тебе файл multi");
-//        messageViolationMS.setMobileSupport(true);
-//        messageViolationMS.setPossibleForgery(true);
-//        messageViolationMS.setViolationTypeId(4L);
-//        List<Long> longs = new ArrayList<Long>();
-//        longs.add(100L);
-//        longs.add(200L);
-//        messageViolationMS.setViolatorId(longs);
-//
-//        connectMulti(violationMulti, "J:/test.txt", messageViolationMS, userpass);
-//    }
+    private void testMessageViolationMulti() throws UnsupportedEncodingException, IOException {
+        MessageViolationMS messageViolationMS = new MessageViolationMS();
+        messageViolationMS.setMessageTime(new Date().getTime()/1000);
+        messageViolationMS.setDescription("12");
+        messageViolationMS.setSecurityKey(UUID.fromString("00000000-0000-0000-0000-000000000030"));
+        messageViolationMS.setMeasures("вот тебе файл multi");
+        messageViolationMS.setMobileSupport(true);
+        messageViolationMS.setPossibleForgery(true);
+        messageViolationMS.setViolationTypeId(UUID.fromString("00000000-0000-0000-0000-000000000036"));
+        List<UUID> longs = new ArrayList<UUID>();
+        longs.add(UUID.fromString("373c7ef9-eb68-42cb-af0f-299c63f872e7"));
+        longs.add(UUID.fromString("a059fce0-a9d6-4f85-91a2-7dcd5f32fe35"));
+        messageViolationMS.setViolatorId(longs);
+
+        connectMulti(violationMulti, "D:/test.txt", messageViolationMS, userpass);
+    }
 
     private void testMessageViolation() throws IOException {
         MessageViolationMS messageViolationMS = new MessageViolationMS();
@@ -124,10 +124,10 @@ public class TestServices {
 
     private void testMessageExitPoll() {
         MessageExitpollMS exitpollMS = new MessageExitpollMS();
-        exitpollMS.setMessageTime(new Date().getTime());
+        exitpollMS.setMessageTime(new Date().getTime()/1000);
         exitpollMS.setDescription("12");
-//        exitpollMS.setSecurityKey(123L);
-
+        exitpollMS.setSecurityKey(UUID.fromString("00000000-0000-0000-0000-000000000036"));
+        exitpollMS.setElectionDistrictId(UUID.fromString("238c22ac-ac2e-4553-af07-2f977a93276a"));
         List<ExitpollField> exitpollFields = new ArrayList<ExitpollField>();
         for (int i = 0; i < 5; i++) {
             exitpollFields.add(new ExitpollField("1000name" + i, "2000" + i, Long.valueOf(i)));
@@ -294,6 +294,9 @@ public class TestServices {
         reqEntity.addPart("file", bin);
         reqEntity.addPart("file", bin);
         httppost.setEntity(reqEntity);
+
+        System.out.println("Input in Server .... \n");
+        System.out.println(httppost.toString());
 
         HttpResponse response = httpclient.execute(httppost);
 
