@@ -48,8 +48,8 @@ public class TestServices {
     private static final String roadMap = "http://localhost:8080/mobile/api/roadMap";
     private static final String exitPoll = "http://localhost:9090/mobile/api/exitpoll";
     private static final String violation = "http://localhost:8080/mobile/api/violation";
-    private static final String violationMulti = "http://localhost:9090/mobile/api/violationMultipart";
-    private static final String totalMulti = "http://localhost:8080/afservice/webresources/mobileService/observerTotalMultipart";
+    private static final String violationMulti = "http://localhost:8080/mobile/api/violationMultipart";
+    private static final String totalMulti = "http://localhost:8080/mobile/api/observerTotalMultipart";
 
     public static void main(String[] args) throws IOException {
         TestServices testServices = new TestServices();
@@ -59,8 +59,8 @@ public class TestServices {
 //        testServices.testeMessageRoadMap();
 //        testServices.testMessageExitPoll();
 //        testServices.testMessageViolation();
-        testServices.testMessageViolationMulti();
-//        testServices.testMessageTotalMulti();
+//        testServices.testMessageViolationMulti();
+        testServices.testMessageTotalMulti();
     }
 
     private void testGetData(){
@@ -68,13 +68,15 @@ public class TestServices {
     }
     
     private void testMessageTotalMulti() throws UnsupportedEncodingException, IOException{
-        
+
         MessageTotalMS messageTotalMS = new MessageTotalMS();
-        messageTotalMS.setMessageTime(1377024780L);
+        messageTotalMS.setMessageTime(new Date().getTime()/1000);
         messageTotalMS.setDescription("12");
-//        messageTotalMS.setSecurityKey(123L);
+        messageTotalMS.setSecurityKey(UUID.fromString("00000000-0000-0000-0000-000000000036"));
+        messageTotalMS.setCorrection(false);
+        messageTotalMS.setElectionDistrictId(UUID.fromString("238c22ac-ac2e-4553-af07-2f977a93276a"));
         List<TotalReportField> lists = new ArrayList<TotalReportField>();
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 24; i++) {
             lists.add(new TotalReportField("test", String.valueOf(100 + i), Long.valueOf(i)));
         }
         messageTotalMS.setTotalReports(lists);
@@ -96,7 +98,7 @@ public class TestServices {
         longs.add(UUID.fromString("a059fce0-a9d6-4f85-91a2-7dcd5f32fe35"));
         messageViolationMS.setViolatorId(longs);
 
-        connectMulti(violationMulti, "D:/test.txt", messageViolationMS, userpass);
+        connectMulti(violationMulti, "J:/test.txt", messageViolationMS, userpass);
     }
 
     private void testMessageViolation() throws IOException {
@@ -291,8 +293,8 @@ public class TestServices {
 
         MultipartEntity reqEntity = new MultipartEntity();
         reqEntity.addPart("dto", comment);
-        reqEntity.addPart("file", bin);
-        reqEntity.addPart("file", bin);
+        reqEntity.addPart("files", bin);
+        reqEntity.addPart("files", bin);
         httppost.setEntity(reqEntity);
 
         System.out.println("Input in Server .... \n");
@@ -303,8 +305,7 @@ public class TestServices {
         System.out.println("output server code:" + response.getStatusLine().getStatusCode());
         HttpEntity entity = response.getEntity();
         InputStream is = entity.getContent();
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-                (is)));
+        BufferedReader br = new BufferedReader(new InputStreamReader((is)));
         String output;
         System.out.println("Output from Server .... \n");
         while ((output = br.readLine()) != null) {
